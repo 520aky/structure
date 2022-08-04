@@ -22,12 +22,13 @@ type aStar struct {
 }
 
 func NewAStar() *aStar {
-	return &aStar{
-		openList:  make([]*Node, 0),
-		closeList: make([]*Node, 0),
-		//path:      make([]*Node, 0),,
+	a := &aStar{
+		//openList:     make([]*Node, 0),
+		//closeList:    make([]*Node, 0),
 		diagCost:     math.Sqrt2,
-		straightCost: 1.0}
+		straightCost: 1.0,
+	}
+	return a
 }
 
 func (a *aStar) isOpen(node *Node) bool {
@@ -85,6 +86,8 @@ func (a *aStar) FindPathFindPath(grid *Grid) bool {
 	a.grid = grid
 	a.startNode = grid.StartNode
 	a.endNode = grid.EndNode
+	a.openList = make([]*Node, 0)
+	a.closeList = make([]*Node, 0)
 	a.startNode.G = 0
 	a.startNode.H = a.diagonal(a.startNode)
 	a.startNode.F = a.startNode.G + a.startNode.H
@@ -101,13 +104,17 @@ func (a *aStar) search() bool {
 		startY := int(math.Max(0, float64(node.Y-1)))
 		endY := int(math.Min(float64(a.grid.NumRows-1), float64(node.Y+1)))
 
+		if !node.Walkable {
+			continue
+		}
+
 		//循环处理所有周边节点
 		for i := startX; i <= endX; i++ {
 			for j := startY; j <= endY; j++ {
 				testNode := a.grid.GetNode(i, j)
 				if testNode == node || !testNode.Walkable ||
-					!a.grid.GetNode(node.X, testNode.Y).Walkable ||
-					!a.grid.GetNode(testNode.X, node.Y).Walkable {
+					(!a.grid.GetNode(node.X, testNode.Y).Walkable &&
+						!a.grid.GetNode(testNode.X, node.Y).Walkable) {
 					//如果测试节点时自身，或者不能走动时，直接进入下一循环
 					continue
 				}
@@ -141,6 +148,7 @@ func (a *aStar) search() bool {
 			}
 		}
 		a.closeList = append(a.closeList, node)
+		//当吧所有可能的点探测完成，如果openList中没有了 ，就表示路不通了
 		if len(a.openList) == 0 {
 			fmt.Println("没有找到最佳路径无路可走")
 			return false
@@ -169,11 +177,45 @@ func (a *aStar) buildPath() {
 		node = node.Parent
 		//下面操作是往切片头部添加一个元素
 		a.path = append(a.path, (*Node)(nil))
-		copy(a.path[1:], a.path[:]) //todo 这里可能会报错
+		copy(a.path[1:], a.path[0:]) //todo 这里可能会报错
 		a.path[0] = node
 	}
 }
 
 func (a *aStar) GetPath() []*Node {
 	return a.path
+}
+
+//打印线路图
+func (a *aStar) Print() {
+	var arr [][]string
+	//把grid转成字符串切片
+	for y := 0; y < a.grid.NumRows; y++ {
+		ss := make([]string, 0)
+		for x := 0; x < a.grid.NumCols; x++ {
+			if a.grid.GetNode(x, y).Walkable {
+				ss = append(ss, "O")
+			} else {
+				ss = append(ss, "X")
+			}
+		}
+
+		arr = append(arr, ss)
+	}
+	//把路径写上去
+
+	for _, node := range a.path {
+		arr[node.Y][node.X] = "2"
+	}
+	//设置起点和结束点字符
+	arr[a.startNode.Y][a.startNode.X] = "S"
+	arr[a.endNode.Y][a.endNode.X] = "E"
+
+	fmt.Println("线路图如下:")
+	for _, v := range arr {
+		for i := 0; i < len(v); i++ {
+			fmt.Print(v[i] + " ")
+		}
+		fmt.Println()
+	}
 }

@@ -75,11 +75,12 @@ func newMaps(arr []string) *Maps {
 
 func main() {
 	arr := []string{
-		"O X O O X O O O",
-		"O O O O X O O O",
-		"X X O O X O O O",
-		"O O O O O O X X",
-		"O O O X O O X O",
+		"O X O O X O O O O",
+		"O O X O X X O O O",
+		"X O X O X O X O O",
+		"O O O O O O O O O",
+		"O O O X O O X O O",
+		"O O O X O O X O O",
 	}
 
 	grid := grid.NewGrid2(arr)
@@ -93,11 +94,14 @@ func main() {
 	//grid.GetNode(3, 4).Walkable = false
 
 	grid.SetStartNode(0, 0)
-	grid.SetEndNode(7, 4)
+	grid.SetEndNode(5, 0)
 
 	astar := astar2.NewAStar()
 	astar.FindPathFindPath(grid)
+
 	for _, v := range astar.GetPath() {
 		fmt.Println(v)
 	}
+
+	astar.Print()
 }
