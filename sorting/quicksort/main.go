@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
-const arrSize = 10
+const arrSize = 6
 
 //快速排序
 func QuickSort(left, right int, array *[arrSize]int) {
@@ -12,7 +15,8 @@ func QuickSort(left, right int, array *[arrSize]int) {
 	pivot := array[(left+right)/2]
 	//for循环的目标是将比pivot小的数放在左边，比pivot大的数放在右边
 	for l < r {
-		//从pivot左边找到一个大于等于pivot的值,重新排序后，会把排序过后的重新检查一遍
+		//从pivot左边找到一个大于等于pivot的值
+		//重新排序后，会把排序过后的重新检查一遍
 		for array[l] < pivot {
 			l++
 		}
@@ -26,8 +30,7 @@ func QuickSort(left, right int, array *[arrSize]int) {
 		}
 		//交换
 		array[l], array[r] = array[r], array[l]
-		//l++
-		//r--
+		fmt.Println(array)
 		//优化
 		if array[l] == pivot {
 			r--
@@ -54,7 +57,14 @@ func QuickSort(left, right int, array *[arrSize]int) {
 }
 
 func main() {
-	arr := [arrSize]int{9, 0, 2, 6, 7, 4, 3, 8, 1, 5}
+	arr := [arrSize]int{30, 40, 60, 10, 20, 50}
+	//rand.Seed(time.Now().UnixNano())
+	//for i := 0; i < arrSize; i++ {
+	//	arr[i] = rand.Intn(arrSize)
+	//}
+
+	start := time.Now()
 	QuickSort(0, len(arr)-1, &arr)
-	fmt.Println(arr)
+	elapse := time.Since(start)
+	fmt.Println("消耗时间:", elapse, arr)
 }
