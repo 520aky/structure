@@ -104,10 +104,6 @@ func (a *aStar) search() bool {
 		startY := int(math.Max(0, float64(node.Y-1)))
 		endY := int(math.Min(float64(a.grid.NumRows-1), float64(node.Y+1)))
 
-		if !node.Walkable {
-			continue
-		}
-
 		//循环处理所有周边节点
 		for i := startX; i <= endX; i++ {
 			for j := startY; j <= endY; j++ {
@@ -116,6 +112,7 @@ func (a *aStar) search() bool {
 					(!a.grid.GetNode(node.X, testNode.Y).Walkable &&
 						!a.grid.GetNode(testNode.X, node.Y).Walkable) {
 					//如果测试节点时自身，或者不能走动时，直接进入下一循环
+					//如果中心点到测试节点，对角线为止不能走动，则此路也不通
 					continue
 				}
 				cost := a.straightCost
