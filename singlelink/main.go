@@ -11,7 +11,7 @@ type HeroNode struct {
 	Next     *HeroNode //这个表示指向下一个地址
 }
 
-//给链表插入一个新节点
+//给链表插入一个新节点（插入顺序排序）
 func InsertHeroNode(head *HeroNode, hero *HeroNode) {
 	tmp := head
 	for tmp.Next != nil {

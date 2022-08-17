@@ -41,7 +41,8 @@ func QuickSort(left, right int, array *[arrSize]int) {
 		//	fmt.Printf("%v\n", *array)
 	}
 	//可注释以下代码做测试
-	//如果l==r，在移动下
+	//如果l==r，再移动下，
+	//这里注释会报错
 	if l == r {
 		l++
 		r--
@@ -57,7 +58,7 @@ func QuickSort(left, right int, array *[arrSize]int) {
 }
 
 func main() {
-	arr := [arrSize]int{30, 40, 60, 10, 20, 50}
+	arr := [arrSize]int{90, 61, 60, 10, 20, 50}
 	//rand.Seed(time.Now().UnixNano())
 	//for i := 0; i < arrSize; i++ {
 	//	arr[i] = rand.Intn(arrSize)

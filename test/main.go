@@ -12,8 +12,9 @@ var CardData = []int{
 }
 
 func main() {
-	s := []int{2, 2, 1, 1, 1, 2, 2, 3, 4, 5, 6, 6, 6, 6, 23, 4, 6, 7, 1, 3, 4, 6, 3, 2, 4, 6, 7}
-	fmt.Println(majorityElement(s))
+	var sum = 'a'
+	var sum1 = 'o'
+	fmt.Printf("sum=%c sum1=%c\n", sum, sum1)
 
 }
 
