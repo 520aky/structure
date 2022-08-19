@@ -111,7 +111,7 @@ func SearchNode(value int, node *BSTree) *BSTree {
 	}
 }
 
-//获取当前节点的子节点
+//当前是否是单节点
 func getSingleChild(node *BSTree) *BSTree {
 	if node.Left != nil && node.Right == nil {
 		return node.Left
@@ -157,16 +157,17 @@ func SearchParentNode(node *BSTree, root *BSTree) *BSTree {
 	return SearchParentNode(node, root.Right)
 }
 
+//删除节点替换方法不通(找到右边最小值作为继任者)
 func DelNode(value int, treeRoot *BSTree) {
 	node, parent, pos := SearchNodeWithParent(value, treeRoot)
 	if node == nil {
 		return
 	}
-	//如果没有父节点 ，表示他就是父节点
 
 	//没有子节点的情况 直接删除
 	if node.isLeaf() {
 		if parent == nil {
+			//根节点  	//如果没有父节点 ，表示他就是父节点
 			*treeRoot = *(*BSTree)(nil)
 			return
 		}
@@ -175,8 +176,10 @@ func DelNode(value int, treeRoot *BSTree) {
 		} else {
 			parent.Right = nil
 		}
-	} else if single := getSingleChild(node); single != nil { //表示要删除的节点 ，只有一个字节点
+	} else if single := getSingleChild(node); single != nil {
+		//要删除的节点 ，只有一个子节点
 		if parent == nil {
+			//如果是根 则直接操作根
 			if node.Left != nil {
 				*treeRoot = *node.Left
 			} else {
@@ -184,18 +187,55 @@ func DelNode(value int, treeRoot *BSTree) {
 			}
 			return
 		}
+		//不是根把左右边的赋值给父节点
 		if pos == "left" {
 			parent.Left = single
 		} else {
 			parent.Right = single
 		}
 	} else {
+		//如果有多节点，则先找到右边的最小值，递归把最小值给删除
 		//先找右节点的最小值,就是继任者
 		successor := MinNode(node.Right)
 		DelNode(successor.Value, treeRoot)
 		node.Value = successor.Value
 
 	}
+}
+
+//bst递归到最后是需要删除的节点(找到左边最大值作为继任者)
+func DelBst(value int, bst *BSTree) bool {
+	if bst == nil {
+		return false
+	} else if bst.Value == value {
+		//要删除的节点没有左节点
+		if bst.Left == nil {
+			tmp := bst
+			*bst = *tmp.Right
+		} else {
+			f, p := bst, bst.Left
+			for p.Right != nil {
+				//经过这里循环过后， p是节点的最大值 f是p的父节点
+				f = p
+				p = p.Right
+			}
+			//找到最大值，把最大值赋值给bst
+			bst.Value = p.Value
+
+			if f == bst { //需要删除的节点最大值，不在右值上
+				bst.Left = p.Left
+			} else {
+				f.Right = p.Left
+			}
+		}
+		return true
+	}
+	if value > bst.Value {
+		return DelBst(value, bst.Right)
+	} else {
+		return DelBst(value, bst.Left)
+	}
+
 }
 
 //打印空格
