@@ -9,7 +9,6 @@ import (
 //洗牌
 
 func randInt(min, max int) int {
-
 	if min >= max {
 		return max
 	}
@@ -184,7 +183,7 @@ func (this Cards) getTypeByCards() int {
 func bankerIsWin(bCards Cards, pCards Cards) bool {
 	bankCardType := bCards.getTypeByCards()
 	playerCardType := pCards.getTypeByCards()
-	
+
 	if bankCardType != playerCardType {
 		return bankCardType > playerCardType
 	}
@@ -212,16 +211,17 @@ func bankerIsWin(bCards Cards, pCards Cards) bool {
 		return compByCardsValue(*pCards[4], *bCards[4])
 	}
 
+	//这里的规则：如果庄家和闲家相同，则庄家赢
 	return true
 }
 
-func compByCardsValue(b, p Card) bool {
-	if b.Value < p.Value {
+func compByCardsValue(a, b Card) bool {
+	if a.Value < b.Value {
 		return true
 	}
-	if b.Value > p.Value {
+	if a.Value > b.Value {
 		return false
 	}
 
-	return b.Color < p.Color
+	return a.Color < b.Color
 }
